@@ -18,24 +18,19 @@ const T = new Twit({
 
 function getTweets(req, res, next) {
   const twitterId = req.params.twitterHandle;
-  T.get(
-    "statuses/user_timeline",
-    { screen_name: `${twitterId}`, count: 100 },
-    (err, tweets) => {
-      return tweets.data;
-    }
-  )
+  T.get("statuses/user_timeline", { screen_name: `${twitterId}`, count: 200 })
     .then(tweetData => {
       const tweetsObject = {};
       tweetsObject.content = "";
       tweetData.data.forEach((tweet, i) => {
-        tweetsObject.content += tweet.text;
+        tweetsObject.content += tweet.text.replace(/http\S+/g, "") + " ";
       });
       return tweetsObject;
     })
     .then(tweetText => {
       analyseTweets(tweetText, req, res, next);
-    });
+    })
+    .catch(err => next(err));
 }
 
 function analyseTweets(tweets, res, res, next) {
@@ -50,6 +45,8 @@ function analyseTweets(tweets, res, res, next) {
       let goodAlignment;
       const lawfulTraits = insight.personality[1].children;
       const goodTraits = insight.personality[3].children;
+      const needsTraits = insight.needs;
+      // Get average score of Lawful
       const averageLawTrait = lawfulTraits.reduce((acc, cv) => {
         if (
           cv.name === "Cautiousness" ||
@@ -66,6 +63,7 @@ function analyseTweets(tweets, res, res, next) {
       if (lawRating < 60 && lawRating > 30) lawAlignment = "Neutral";
       if (lawRating >= 60) lawAlignment = "Lawful";
 
+      // Get average score of Good/Evil
       const averageGoodTrait = goodTraits.reduce((acc, cv) => {
         if (
           cv.name === "Altruism" ||
@@ -80,15 +78,31 @@ function analyseTweets(tweets, res, res, next) {
       }, 0);
 
       const goodRating = (averageGoodTrait / 5 * 100).toFixed(2);
-      if (goodRating <= 30) goodAlignment = "evil";
-      if (goodRating < 60 && goodRating > 30) goodAlignment = "neutral";
-      if (goodRating >= 60) goodAlignment = "good";
 
-      //res.send(lawAlignment);
+      //Get average score of Needs
+      const averageNeedsTrait = needsTraits.reduce((acc, cv) => {
+        if (cv.name === "Harmony" || cv.name === "Love") {
+          acc += Number(cv.percentile);
+        }
+        return acc;
+      }, 0);
 
-      res.send(`${lawAlignment} ${goodAlignment}`);
+      const needsRating = (averageNeedsTrait / 2 * 100).toFixed(2);
+
+      const finalGood = (Number(goodRating) + Number(needsRating)) / 2;
+
+      if (finalGood <= 36) goodAlignment = "evil";
+      if (finalGood < 55 && finalGood > 36) goodAlignment = "neutral";
+      if (finalGood >= 55) goodAlignment = "good";
+
+      if (lawAlignment === "Neutral" && goodAlignment === "neutral") {
+        res.send("True neutral");
+      } else {
+        res.send(`${lawAlignment} ${goodAlignment}`);
+      }
     }
   );
+  // .catch(next);
 }
 
 module.exports = { getTweets };
