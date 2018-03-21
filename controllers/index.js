@@ -16,14 +16,46 @@ const T = new Twit({
     app_only_auth: true
 })
 
-function analysePersonality(req, res, next) {
-    const { content } = req.body;
+
+function getTweets(req, res, next) {
+    const twitterId = req.params.twitterHandle
+    T.get('statuses/user_timeline', {screen_name: `${twitterId}`, count: 100},
+        (err, tweets) => { 
+            return tweets.data
+        }).then(tweetData => {
+            const tweetsObject = {};
+            tweetsObject.content = '';
+            tweetData.data.forEach((tweet, i) => {
+                tweetsObject.content += tweet.text;
+            }); 
+                return tweetsObject 
+        }).then(tweetText => {
+            analyseTweets(tweetText, req, res, next)
+        
+    })
+}
+
+function analyseTweets(tweets, res, res, next) {    
+    const {content} = tweets;
     pi.profile({
         content,
         content_type: 'text/plain'
     }, (err, insight) => {
-        res.send({insight})
-    })
-}
+        let lawAlignment;
+        const lawfulTraits = insight.personality[1].children
+        const goodTraits = insight.personality[1].children
+        const averageLawTrait = lawfulTraits.reduce((acc, cv) => 
+            {
+            if (cv.name === 'Cautiousness' || cv.name === 'Dutifulness' || cv.name === 'Orderliness' || cv.name === 'Self-discipline') {
+                acc += Number(cv.percentile)}
+                return acc
+            }, 0)
+        const lawRating = (averageLawTrait / 4 * 100).toFixed(2)
+        if (lawRating <= 30) lawAlignment = 'Chaotic'
+        if (lawRating < 60 && lawRating > 30) lawAlignment = 'Neutral'
+        if (lawRating >= 60) lawAlignment = 'Lawful'
+        
+        res.send(lawAlignment)
+})}
 
-module.exports = analysePersonality
+module.exports = {getTweets}
