@@ -1,24 +1,30 @@
+const Twit = require("twit");
 const PersonalityInsights = require("watson-developer-cloud/personality-insights/v3");
 const { personalityConfig, twitterKeys } = require("../config");
-const username = personalityConfig.username;
-const password = personalityConfig.password;
-const Twit = require("twit");
+if (process.env.NODE_ENV === 'production') watsonUsername = process.env.watsonUsername;
+else watsonUsername = personalityConfig.username;
+if (process.env.NODE_ENV === 'production') watsonPassword = process.env.watsonPassword;
+else watsonPassword = personalityConfig.password;
+if (process.env.NODE_ENV === 'production') twitKey = process.env.twitKey;
+else twitKey = twitterKeys.consumer_key;
+if (process.env.NODE_ENV === 'production') twitSecretKey = process.env.twitSecretKey;
+else twitSecretKey = twitterKeys.consumer_secret;
 
 const pi = new PersonalityInsights({
-  username,
-  password,
+  username: watsonUsername,
+  password: watsonPassword,
   version_date: "2017-12-12"
 });
 
 const T = new Twit({
-  consumer_key: twitterKeys.consumer_key,
-  consumer_secret: twitterKeys.consumer_secret,
+  consumer_key: twitKey,
+  consumer_secret: twitSecretKey,
   app_only_auth: true
 });
 
 function getTweets(req, res, next) {
   const twitterId = req.params.twitterHandle;
-  T.get("statuses/user_timeline", { screen_name: `${twitterId}`, count: 200 })
+  T.get("statuses/user_timeline", { screen_name: `${twitterId}`, count: 1000 })
     .then(tweetData => {
       const tweetsObject = {};
       tweetsObject.content = "";

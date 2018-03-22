@@ -1,5 +1,9 @@
 const app = require('./app')
+if (!process.env.PORT) PORT = 9090;
+else PORT = process.env.PORT
 
-app.listen(9090, () => {
-    console.log('app listening on 9090')
+console.log(process.env.NODE_ENV)
+
+app.listen(PORT, () => {
+    console.log(`app listening on ${PORT}`)
 })
