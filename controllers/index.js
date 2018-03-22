@@ -121,8 +121,7 @@ function analyseTweets(tweets, res, res, next) {
       
       res.render('alignment.ejs', {finalAlignment, finalImage})
     }
-  );
-  // .catch(next);
+  )//.catch(next);
 }
 
 module.exports = { getTweets };
