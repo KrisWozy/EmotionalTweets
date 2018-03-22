@@ -1,15 +1,16 @@
 const Twit = require("twit");
 const PersonalityInsights = require("watson-developer-cloud/personality-insights/v3");
-console.log(process.env.NODE_ENV)
-if (process.env.NODE_ENV !== 'production') let { personalityConfig, twitterKeys } = require("../config");
+
+console.log('********', process.env.NODE_ENV, '**********')
+
 if (process.env.NODE_ENV === 'production') watsonUsername = process.env.watsonUsername;
-else watsonUsername = personalityConfig.username;
+else watsonUsername = require('../config').personalityConfig.username;
 if (process.env.NODE_ENV === 'production') watsonPassword = process.env.watsonPassword;
-else watsonPassword = personalityConfig.password;
+else watsonPassword = require('../config').personalityConfig.password;
 if (process.env.NODE_ENV === 'production') twitKey = process.env.twitKey;
-else twitKey = twitterKeys.consumer_key;
+else twitKey = require('../config').twitterKeys.consumer_key;
 if (process.env.NODE_ENV === 'production') twitSecretKey = process.env.twitSecretKey;
-else twitSecretKey = twitterKeys.consumer_secret;
+else twitSecretKey = require('../config').twitterKeys.consumer_secret;
 
 const pi = new PersonalityInsights({
   username: watsonUsername,
