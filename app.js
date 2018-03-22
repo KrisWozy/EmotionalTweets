@@ -8,6 +8,10 @@ app.use(bodyParser.json());
 
 app.use("/personality", personalityRouter);
 
+app.get('/', (res, req, next) => {
+    res.send('hello')
+})
+
 app.use("/*", (req, res, next) => next({ status: 404 }));
 
 app.use((err, req, res, next) => {
