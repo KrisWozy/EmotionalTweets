@@ -1,6 +1,6 @@
 const Twit = require("twit");
 const PersonalityInsights = require("watson-developer-cloud/personality-insights/v3");
-const { personalityConfig, twitterKeys } = require("../config");
+if (proicess.env.NODE_ENV === 'production') const { personalityConfig, twitterKeys } = require("../config");
 if (process.env.NODE_ENV === 'production') watsonUsername = process.env.watsonUsername;
 else watsonUsername = personalityConfig.username;
 if (process.env.NODE_ENV === 'production') watsonPassword = process.env.watsonPassword;
