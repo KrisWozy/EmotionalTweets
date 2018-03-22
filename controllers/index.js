@@ -49,6 +49,10 @@ function analyseTweets(tweets, res, res, next) {
       content_type: "text/plain"
     },
     (err, insight) => {
+        if (err) {
+            console.log(err);
+            return next(err)
+        }
       let lawAlignment;
       let goodAlignment;
       const lawfulTraits = insight.personality[1].children;
@@ -122,7 +126,6 @@ function analyseTweets(tweets, res, res, next) {
       res.render('alignment.ejs', {finalAlignment, finalImage})
     }
   );
-  // .catch(next);
 }
 
 module.exports = { getTweets };
