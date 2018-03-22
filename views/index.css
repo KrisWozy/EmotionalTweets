@@ -2,22 +2,45 @@
 body {
     background-color: black;
     color: white;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    width: 100%;
+    align-content: center
+}
+
+body.bgimage {
+    background-size: 100%;
+    background-repeat: no-repeat
+}
+
+.alignmentbgimage {
+    background-size: 100%;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    
 }
 
 h1 {
-    padding-top: 80px;
+    padding-top: 40px;
     color: red;
     font-size: 80px;
     align-content: center
 }
 
 .inputForm {
-    text-align: center
+    text-align: center;
+    max-width: 800px;
+    margin: auto;
+    padding-bottom: 40px
+}
+
+.box {
+    background-color: white;
+    opacity: 0.2
 }
 
 input {
-    font-size: 40px
+    font-size: 40px;
+    opacity: 1
 }
 
 form {
