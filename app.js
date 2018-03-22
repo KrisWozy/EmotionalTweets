@@ -1,16 +1,19 @@
-//process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
-const app = require("express")();
+const express = require('express')
+const app = express();
+const path = require('path')
 const bodyParser = require("body-parser");
 const personalityRouter = require("./routes/personality");
 
 app.use(bodyParser.json());
 
-app.use("/personality", personalityRouter);
+app.set('view engine', 'ejs')
 
-app.get('/', (res, req, next) => {
-    res.send('hello')
-})
+app.use(express.static(path.join(__dirname, 'views')))
+
+app.get('/', (req, res) => res.render('index.ejs'))
+
+app.use("/personality", personalityRouter);
 
 app.use("/*", (req, res, next) => next({ status: 404 }));
 

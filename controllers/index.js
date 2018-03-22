@@ -1,8 +1,6 @@
 const Twit = require("twit");
 const PersonalityInsights = require("watson-developer-cloud/personality-insights/v3");
 
-console.log('********', process.env.NODE_ENV, '**********')
-
 if (process.env.NODE_ENV === 'production') watsonUsername = process.env.watsonUsername;
 else watsonUsername = require('../config').personalityConfig.username;
 if (process.env.NODE_ENV === 'production') watsonPassword = process.env.watsonPassword;
@@ -25,7 +23,7 @@ const T = new Twit({
 });
 
 function getTweets(req, res, next) {
-  const twitterId = req.params.twitterHandle;
+    const twitterId = '@' + req.query.handle;
   T.get("statuses/user_timeline", { screen_name: `${twitterId}`, count: 1000 })
     .then(tweetData => {
       const tweetsObject = {};
@@ -42,6 +40,8 @@ function getTweets(req, res, next) {
 }
 
 function analyseTweets(tweets, res, res, next) {
+    let finalAlignment;
+    let finalImage;
   const { content } = tweets;
   pi.profile(
     {
@@ -104,10 +104,22 @@ function analyseTweets(tweets, res, res, next) {
       if (finalGood >= 55) goodAlignment = "good";
 
       if (lawAlignment === "Neutral" && goodAlignment === "neutral") {
-        res.send("True neutral");
+        finalAlignment = "True neutral";
       } else {
-        res.send(`${lawAlignment} ${goodAlignment}`);
+        finalAlignment = `${lawAlignment} ${goodAlignment}`
+        
       }
+      if (finalAlignment === 'Lawful good') finalImage = 'LG.gif'
+      if (finalAlignment === 'Neutral good') finalImage = 'NG.gif'
+      if (finalAlignment === 'Chaotic good') finalImage = 'CG.gif'
+      if (finalAlignment === 'Lawful neutral') finalImage = 'LN.gif'
+      if (finalAlignment === 'True neutral') finalImage = 'TN.gif'
+      if (finalAlignment === 'Chaotic neutral') finalImage = 'CN.gif'
+      if (finalAlignment === 'Lawful evil') finalImage = 'LE.gif'
+      if (finalAlignment === 'Neutral evil') finalImage = 'NE.gif'
+      if (finalAlignment === 'Chaotic evil') finalImage = 'CE.gif'
+      
+      res.render('alignment.ejs', {finalAlignment, finalImage})
     }
   );
   // .catch(next);

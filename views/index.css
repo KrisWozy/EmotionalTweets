@@ -1,0 +1,43 @@
+
+body {
+    background-color: black;
+    color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+h1 {
+    padding-top: 80px;
+    color: red;
+    font-size: 80px;
+    align-content: center
+}
+
+.inputForm {
+    text-align: center
+}
+
+input {
+    font-size: 40px
+}
+
+form {
+    font-size: 25px
+}
+
+.atsymbol {
+    font-size: 55px
+}
+
+#button {
+    font-size: 30px
+}
+
+.result {
+    font-size: 80px;
+    text-align: center
+}
+
+.image {
+    height: 150px;
+    text-align: center
+}
